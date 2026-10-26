@@ -4,7 +4,6 @@ import Layout from "./components/Layout";
 
 import Dashboard from "./pages/Dashboard";
 import Predict from "./pages/Predict";
-import Analytics from "./pages/Analytics";
 import Model from "./pages/Model";
 import About from "./pages/About";
 
@@ -15,7 +14,7 @@ function App() {
         <Route element={<Layout />}>
           <Route path="/" element={<Dashboard />} />
           <Route path="/predict" element={<Predict />} />
-          <Route path="/analytics" element={<Analytics />} />
+          
           <Route path="/model" element={<Model />} />
           <Route path="/about" element={<About />} />
         </Route>

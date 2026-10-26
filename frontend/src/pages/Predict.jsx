@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 import {
   Activity,
@@ -77,6 +77,8 @@ function Predict() {
   const [result, setResult] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+    const topRef = useRef(null);
+
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -128,6 +130,14 @@ function Predict() {
       }
 
       setResult(data);
+            // Automatically glides the page up to the header element layout smoothly
+      setTimeout(() => {
+        topRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }, 50);
+
     } catch (err) {
       setError(err.message || "Could not connect to the prediction server.");
     } finally {
@@ -143,7 +153,7 @@ function Predict() {
 
       <div className="relative mx-auto max-w-7xl px-5 py-8 sm:px-8">
         {/* Page heading */}
-        <div className="mb-8">
+        <div ref={topRef} className="mb-8 scroll-mt-6">
           <div className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-cyan-400">
             <Activity size={15} />
             AI Prediction Workspace

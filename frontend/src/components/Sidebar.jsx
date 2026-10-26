@@ -2,7 +2,6 @@ import { NavLink } from "react-router-dom";
 
 import {
   Activity,
-  BarChart3,
   BrainCircuit,
   ChevronRight,
   CircleHelp,
@@ -21,11 +20,6 @@ const links = [
     to: "/predict",
     label: "AI Prediction",
     icon: Stethoscope,
-  },
-  {
-    to: "/analytics",
-    label: "Analytics",
-    icon: BarChart3,
   },
   {
     to: "/model",

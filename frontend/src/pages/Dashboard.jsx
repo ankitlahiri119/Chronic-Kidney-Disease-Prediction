@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 
 import {
   ArrowRight,
-  BarChart3,
   BrainCircuit,
   Database,
   Microscope,
@@ -40,8 +39,9 @@ function Dashboard() {
             </h1>
 
             <p className="mt-6 max-w-2xl text-sm leading-7 text-slate-400 sm:text-base">
-              CKDPredict combines clinical data preprocessing and XGBoost machine learning to generate an AI-based
-              chronic kidney disease prediction.
+              CKDPredict combines clinical data preprocessing and XGBoost
+              machine learning to generate an AI-based chronic kidney disease
+              prediction.
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -101,23 +101,15 @@ function Dashboard() {
             description="Clinical parameters"
             accent="violet"
           />
-
         </section>
 
         {/* Feature cards */}
-        <section className="mt-8 grid gap-5 lg:grid-cols-3">
+        <section className="mt-8 grid gap-5 lg:grid-cols-2">
           <FeatureCard
             icon={<Stethoscope />}
             title="AI Prediction"
             text="Enter clinical parameters and receive a real-time machine learning prediction."
             link="/predict"
-          />
-
-          <FeatureCard
-            icon={<BarChart3 />}
-            title="Model Analytics"
-            text="Explore performance metrics, model architecture and training methodology."
-            link="/analytics"
           />
 
           <FeatureCard
