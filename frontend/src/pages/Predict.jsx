@@ -13,7 +13,10 @@ import {
 
 import ProbabilityBar from "../components/ProbabilityBar";
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = (
+  import.meta.env.VITE_API_URL ||
+  "https://chronic-kidney-disease-prediction-8kim.onrender.com"
+).replace(/\/+$/, "");
 
 const numericFields = [
   ["age", "Age", "e.g. 48"],
@@ -77,8 +80,7 @@ function Predict() {
   const [result, setResult] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-    const topRef = useRef(null);
-
+  const topRef = useRef(null);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -123,23 +125,42 @@ function Predict() {
         body: JSON.stringify(payload),
       });
 
-      const data = await response.json();
+      let data;
+
+      try {
+        data = await response.json();
+      } catch {
+        throw new Error(
+          `The prediction server returned an invalid response (HTTP ${response.status}). Check the backend logs.`
+        );
+      }
 
       if (!response.ok) {
-        throw new Error(data.error || "Prediction failed.");
+        throw new Error(
+          data.error ||
+            data.message ||
+            `Prediction failed with HTTP ${response.status}.`
+        );
       }
 
       setResult(data);
-            // Automatically glides the page up to the header element layout smoothly
+
       setTimeout(() => {
         topRef.current?.scrollIntoView({
           behavior: "smooth",
           block: "start",
         });
       }, 50);
-
     } catch (err) {
-      setError(err.message || "Could not connect to the prediction server.");
+      if (err instanceof TypeError) {
+        setError(
+          "Could not connect to the prediction server. Check that the backend is awake, the API URL is correct, and CORS allows your Vercel website."
+        );
+      } else {
+        setError(
+          err.message || "Could not connect to the prediction server."
+        );
+      }
     } finally {
       setLoading(false);
     }
@@ -152,7 +173,6 @@ function Predict() {
       <div className="pointer-events-none absolute inset-0 grid-bg opacity-30" />
 
       <div className="relative mx-auto max-w-7xl px-5 py-8 sm:px-8">
-        {/* Page heading */}
         <div ref={topRef} className="mb-8 scroll-mt-6">
           <div className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-cyan-400">
             <Activity size={15} />
@@ -165,12 +185,11 @@ function Predict() {
 
           <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
             Enter the clinical parameters used by the trained XGBoost model.
-            Your data is processed by the local prediction API.
+            Your data is processed by the prediction API.
           </p>
         </div>
 
         <div className="grid gap-6 xl:grid-cols-[1.55fr_0.75fr]">
-          {/* Form */}
           <form
             onSubmit={submit}
             className="rounded-3xl border border-slate-800 bg-slate-900/60 p-5 shadow-2xl sm:p-7"
@@ -259,7 +278,6 @@ function Predict() {
             </div>
           </form>
 
-          {/* Result */}
           <div className="h-fit xl:sticky xl:top-24">
             <ResultPanel result={result} error={error} positive={positive} />
           </div>
@@ -347,7 +365,8 @@ function ResultPanel({ result, error, positive }) {
         <p className="mt-2 text-sm leading-6 text-red-300/70">{error}</p>
 
         <p className="mt-4 text-xs text-slate-500">
-          Check that the Flask backend is running on the configured API URL.
+          Check that the backend is running, the API route is correct, and CORS
+          allows requests from your Vercel domain.
         </p>
       </div>
     );
@@ -444,7 +463,6 @@ function ResultPanel({ result, error, positive }) {
 
         <div className="mt-7 grid grid-cols-1 gap-3">
           <InfoBox label="Model" value={result.model} />
-
         </div>
       </div>
 
@@ -453,8 +471,8 @@ function ResultPanel({ result, error, positive }) {
           <ShieldCheck size={18} className="mt-0.5 shrink-0 text-blue-400" />
 
           <p className="text-xs leading-5 text-slate-500">
-            This AI prediction is for educational and research purposes only and
-            should not be considered a medical diagnosis.
+            This AI prediction is for educational and research purposes only
+            and should not be considered a medical diagnosis.
           </p>
         </div>
       </div>
