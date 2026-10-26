@@ -8,4 +8,5 @@ jupyter
 joblib
 flask
 flask-cors
+gunicorn
 xgboost
